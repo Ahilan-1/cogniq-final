@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CogniQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'SF Pro Display', sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            border-radius: 50px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            background-color: #f2f2f2;
+            color: #1d1d1f;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+        }
+
+        button {
+            padding: 15px 20px;
+            font-size: 16px;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        h2 {
+            color: #1d1d1f;
+            border-bottom: 2px solid #0071e3;
+            padding-bottom: 10px;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+
+        .result-box {
+            background-color: #fafafa;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .result-box h3 {
+            color: #0071e3;
+            margin-top: 0;
+        }
+
+        .result-box a {
+            color: #0071e3;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .result-box a:hover {
+            color: #005bb5;
+            text-decoration: underline;
+        }
+
+        .snippet {
+            color: #6e6e73;
+            font-size: 0.9em;
+        }
+
+        .summary h4 {
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+
+        mark.highlight {
+            background-color: #ffff00;
+            padding: 2px 0;
+        }
+
+        .loading-screen {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            text-align: center;
+            padding-top: 200px;
+            font-size: 24px;
+            color: #1d1d1f;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0071e3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            input[type="text"], button {
+                width: 100%;
+                border-radius: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+        .follow-up-form {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            border-radius: 50px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .follow-up-form input[type="text"] {
+            flex-grow: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            background-color: #f2f2f2;
+            color: #1d1d1f;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+        }
+
+        .follow-up-form button {
+            padding: 15px 20px;
+            font-size: 16px;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+        }
+
+        .follow-up-form button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CogniQ</h1>
+        <form method="POST" class="search-form" onsubmit="showLoadingScreen()">
+            <input type="text" name="query" placeholder="What are you looking for?" required>
+            <button type="submit">Search</button>
+        </form>
+
+        <div id="loading-screen" class="loading-screen">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+
+        {% if query %}
+            <h2>Search Results for "{{ query }}"</h2>
+
+            {% if google_combined_summary or youtube_combined_summary %}
+                <div class="quick-answer-container">
+                    <h3>Quick Answer</h3>
+                    <p>{{ google_combined_summary }} {{ youtube_combined_summary }}</p>
+                </div>
+            {% endif %}
+
+            {% for result in google_results %}
+                <div class="result-box">
+                    <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                    <p class="snippet">{{ result.snippet }}</p>
+                    {% if result.summary %}
+                        <div class="summary">
+                            <h4>Summary</h4>
+                            <p>{{ result.summary }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% for result in youtube_results %}
+                <div class="result-box">
+                    <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                    {% if result.summary %}
+                        <div class="summary">
+                            <h4>Summary</h4>
+                            <p>{{ result.summary }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <form method="POST" class="follow-up-form" action="/follow-up" onsubmit="showLoadingScreen()">
+                <input type="hidden" name="original_query" value="{{ query }}">
+                <input type="text" name="follow_up_query" placeholder="Ask a follow-up question" required>
+                <button type="submit">Ask</button>
+            </form>
+        {% endif %}
+    </div>
+    <script>
+        function showLoadingScreen() {
+            document.getElementById('loading-screen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
