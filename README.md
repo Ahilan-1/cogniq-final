@@ -41,7 +41,7 @@
     cd cogniq-final
     ```
 
-2. Create a virtual environment:
+2. Create a virtual environment and activate it:
 
     ```bash
     python -m venv env
@@ -66,13 +66,11 @@
 
 1. Run the application:
 
-python app.py 
-
-    ```bash
-    uvicorn main:app --reload
+    ```python
+    python app.py
     ```
 
-3. Open your browser and navigate to `http://127.0.0.1:8000` to access Cogniq Search Engine.
+2. Open your browser and navigate to `http://127.0.0.1:8000` to access Cogniq Search Engine.
 
 ## Contributing
 
